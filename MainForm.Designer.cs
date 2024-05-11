@@ -43,14 +43,16 @@
             this.tbLogFileName = new System.Windows.Forms.TextBox();
             this.saveFileDialogLog = new System.Windows.Forms.SaveFileDialog();
             this.gbSend = new System.Windows.Forms.GroupBox();
-            this.tbSend1 = new System.Windows.Forms.TextBox();
-            this.bSend1 = new System.Windows.Forms.Button();
-            this.bSend2 = new System.Windows.Forms.Button();
-            this.tbSend2 = new System.Windows.Forms.TextBox();
-            this.bSend3 = new System.Windows.Forms.Button();
-            this.tbSend3 = new System.Windows.Forms.TextBox();
             this.bSend4 = new System.Windows.Forms.Button();
             this.tbSend4 = new System.Windows.Forms.TextBox();
+            this.bSend3 = new System.Windows.Forms.Button();
+            this.tbSend3 = new System.Windows.Forms.TextBox();
+            this.bSend2 = new System.Windows.Forms.Button();
+            this.tbSend2 = new System.Windows.Forms.TextBox();
+            this.bSend1 = new System.Windows.Forms.Button();
+            this.tbSend1 = new System.Windows.Forms.TextBox();
+            this.cbANSIParse = new System.Windows.Forms.CheckBox();
+            this.cbANSIRemove = new System.Windows.Forms.CheckBox();
             this.gbSerialPortSettings.SuspendLayout();
             this.statusStripMain.SuspendLayout();
             this.gbLogging.SuspendLayout();
@@ -135,12 +137,12 @@
             // 
             // tbOutput
             // 
-            this.tbOutput.BackColor = System.Drawing.Color.Black;
+            this.tbOutput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.tbOutput.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbOutput.ForeColor = System.Drawing.Color.LightGray;
-            this.tbOutput.Location = new System.Drawing.Point(12, 59);
+            this.tbOutput.Location = new System.Drawing.Point(18, 53);
             this.tbOutput.Name = "tbOutput";
-            this.tbOutput.Size = new System.Drawing.Size(946, 468);
+            this.tbOutput.Size = new System.Drawing.Size(946, 441);
             this.tbOutput.TabIndex = 0;
             this.tbOutput.TabStop = false;
             this.tbOutput.Text = "";
@@ -202,43 +204,24 @@
             this.gbSend.TabStop = false;
             this.gbSend.Text = "Send";
             // 
-            // tbSend1
+            // bSend4
             // 
-            this.tbSend1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSend1.Location = new System.Drawing.Point(19, 19);
-            this.tbSend1.Name = "tbSend1";
-            this.tbSend1.Size = new System.Drawing.Size(355, 21);
-            this.tbSend1.TabIndex = 5;
+            this.bSend4.Location = new System.Drawing.Point(851, 46);
+            this.bSend4.Name = "bSend4";
+            this.bSend4.Size = new System.Drawing.Size(75, 23);
+            this.bSend4.TabIndex = 12;
+            this.bSend4.Text = "Send";
+            this.bSend4.UseCompatibleTextRendering = true;
+            this.bSend4.UseVisualStyleBackColor = true;
+            this.bSend4.Click += new System.EventHandler(this.bSend4_Click);
             // 
-            // bSend1
+            // tbSend4
             // 
-            this.bSend1.Location = new System.Drawing.Point(380, 19);
-            this.bSend1.Name = "bSend1";
-            this.bSend1.Size = new System.Drawing.Size(75, 23);
-            this.bSend1.TabIndex = 6;
-            this.bSend1.Text = "Send";
-            this.bSend1.UseCompatibleTextRendering = true;
-            this.bSend1.UseVisualStyleBackColor = true;
-            this.bSend1.Click += new System.EventHandler(this.bSend1_Click);
-            // 
-            // bSend2
-            // 
-            this.bSend2.Location = new System.Drawing.Point(380, 48);
-            this.bSend2.Name = "bSend2";
-            this.bSend2.Size = new System.Drawing.Size(75, 23);
-            this.bSend2.TabIndex = 8;
-            this.bSend2.Text = "Send";
-            this.bSend2.UseCompatibleTextRendering = true;
-            this.bSend2.UseVisualStyleBackColor = true;
-            this.bSend2.Click += new System.EventHandler(this.bSend2_Click);
-            // 
-            // tbSend2
-            // 
-            this.tbSend2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSend2.Location = new System.Drawing.Point(19, 50);
-            this.tbSend2.Name = "tbSend2";
-            this.tbSend2.Size = new System.Drawing.Size(355, 21);
-            this.tbSend2.TabIndex = 7;
+            this.tbSend4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSend4.Location = new System.Drawing.Point(490, 48);
+            this.tbSend4.Name = "tbSend4";
+            this.tbSend4.Size = new System.Drawing.Size(355, 21);
+            this.tbSend4.TabIndex = 11;
             // 
             // bSend3
             // 
@@ -259,30 +242,71 @@
             this.tbSend3.Size = new System.Drawing.Size(355, 21);
             this.tbSend3.TabIndex = 9;
             // 
-            // bSend4
+            // bSend2
             // 
-            this.bSend4.Location = new System.Drawing.Point(851, 46);
-            this.bSend4.Name = "bSend4";
-            this.bSend4.Size = new System.Drawing.Size(75, 23);
-            this.bSend4.TabIndex = 12;
-            this.bSend4.Text = "Send";
-            this.bSend4.UseCompatibleTextRendering = true;
-            this.bSend4.UseVisualStyleBackColor = true;
-            this.bSend4.Click += new System.EventHandler(this.bSend4_Click);
+            this.bSend2.Location = new System.Drawing.Point(380, 48);
+            this.bSend2.Name = "bSend2";
+            this.bSend2.Size = new System.Drawing.Size(75, 23);
+            this.bSend2.TabIndex = 8;
+            this.bSend2.Text = "Send";
+            this.bSend2.UseCompatibleTextRendering = true;
+            this.bSend2.UseVisualStyleBackColor = true;
+            this.bSend2.Click += new System.EventHandler(this.bSend2_Click);
             // 
-            // tbSend4
+            // tbSend2
             // 
-            this.tbSend4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSend4.Location = new System.Drawing.Point(490, 48);
-            this.tbSend4.Name = "tbSend4";
-            this.tbSend4.Size = new System.Drawing.Size(355, 21);
-            this.tbSend4.TabIndex = 11;
+            this.tbSend2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSend2.Location = new System.Drawing.Point(19, 50);
+            this.tbSend2.Name = "tbSend2";
+            this.tbSend2.Size = new System.Drawing.Size(355, 21);
+            this.tbSend2.TabIndex = 7;
+            // 
+            // bSend1
+            // 
+            this.bSend1.Location = new System.Drawing.Point(380, 19);
+            this.bSend1.Name = "bSend1";
+            this.bSend1.Size = new System.Drawing.Size(75, 23);
+            this.bSend1.TabIndex = 6;
+            this.bSend1.Text = "Send";
+            this.bSend1.UseCompatibleTextRendering = true;
+            this.bSend1.UseVisualStyleBackColor = true;
+            this.bSend1.Click += new System.EventHandler(this.bSend1_Click);
+            // 
+            // tbSend1
+            // 
+            this.tbSend1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSend1.Location = new System.Drawing.Point(19, 19);
+            this.tbSend1.Name = "tbSend1";
+            this.tbSend1.Size = new System.Drawing.Size(355, 21);
+            this.tbSend1.TabIndex = 5;
+            // 
+            // cbANSIParse
+            // 
+            this.cbANSIParse.AutoSize = true;
+            this.cbANSIParse.Location = new System.Drawing.Point(838, 505);
+            this.cbANSIParse.Name = "cbANSIParse";
+            this.cbANSIParse.Size = new System.Drawing.Size(114, 17);
+            this.cbANSIParse.TabIndex = 9;
+            this.cbANSIParse.Text = "Parse ANSI Codes";
+            this.cbANSIParse.UseVisualStyleBackColor = true;
+            // 
+            // cbANSIRemove
+            // 
+            this.cbANSIRemove.AutoSize = true;
+            this.cbANSIRemove.Location = new System.Drawing.Point(703, 505);
+            this.cbANSIRemove.Name = "cbANSIRemove";
+            this.cbANSIRemove.Size = new System.Drawing.Size(127, 17);
+            this.cbANSIRemove.TabIndex = 10;
+            this.cbANSIRemove.Text = "Remove ANSI Codes";
+            this.cbANSIRemove.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(970, 640);
+            this.Controls.Add(this.cbANSIRemove);
+            this.Controls.Add(this.cbANSIParse);
             this.Controls.Add(this.gbSend);
             this.Controls.Add(this.gbLogging);
             this.Controls.Add(this.tbOutput);
@@ -331,6 +355,8 @@
         private System.Windows.Forms.TextBox tbSend2;
         private System.Windows.Forms.Button bSend1;
         private System.Windows.Forms.TextBox tbSend1;
+        private System.Windows.Forms.CheckBox cbANSIParse;
+        private System.Windows.Forms.CheckBox cbANSIRemove;
     }
 }
 

@@ -13,6 +13,8 @@ using Microsoft.Win32;
 using System.IO;
 using System.Collections;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Text.RegularExpressions;
+using System.Data.SqlTypes;
 
 namespace SerialTerminal
 {
@@ -112,13 +114,6 @@ namespace SerialTerminal
                 string[] Array = key.Split(new char[] { '(', ')' });
                 cbPortNumber.Items.Add(value + ": " + Array[0]);
             }
-
-            //string[] CommPorts;
-            //CommPorts = SerialPort.GetPortNames();
-            //foreach (string portName in CommPorts)
-            //{
-            //    cbPortNumber.Items.Add(portName);
-            //}
         }
 
         private void PopulateBaudRates()
@@ -141,7 +136,21 @@ namespace SerialTerminal
         {
             this.Invoke((MethodInvoker)delegate
             {
-                tbOutput.Text += data;
+                if (cbANSIParse.Checked)
+                {
+                    tbOutput.AppendANSIText(data);
+                } 
+                else if (cbANSIRemove.Checked)
+                {
+                    tbOutput.RemoveANSIText(data);
+                } 
+                else
+                {
+                    tbOutput.AppendText(data);
+                    //tbOutput.Text += data;
+                }
+                tbOutput.SelectionStart = tbOutput.Text.Length;
+                tbOutput.ScrollToCaret();
             });
 
             if (logging)
@@ -152,8 +161,15 @@ namespace SerialTerminal
 
         private void DataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
         {
-            string data = CommPort.ReadExisting();
-            UpdateTerm(data);
+            try
+            {
+                string data = CommPort.ReadExisting();
+                //string data = CommPort.ReadLine();
+                UpdateTerm(data);
+            } catch (Exception ex)
+            {
+                tsStatus.Text = ex.Message.ToString();
+            }
         }
 
         private void OpenCommPort()
@@ -183,8 +199,13 @@ namespace SerialTerminal
             // No flow control:
             CommPort.Handshake = Handshake.None;
             // Timeouts:
-            CommPort.ReadTimeout = 500;
-            CommPort.WriteTimeout = 500;
+            CommPort.ReadTimeout = 200;
+            CommPort.WriteTimeout = 200;
+
+            CommPort.NewLine = "\r\n";
+            //CommPort.ReceivedBytesThreshold = 80;
+            //CommPort.ReadBufferSize = 4096;
+
 
             CommPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedEventHandler);
 
@@ -338,6 +359,156 @@ namespace SerialTerminal
             key.SetValue("Send Line 3", (string)tbSend3.Text);
             key.SetValue("Send Line 4", (string)tbSend4.Text);
             key.Close();
+        }
+    }
+
+    public static class RichTextBoxExtensions
+    {
+        public static void RemoveANSIText(this RichTextBox box, string text)
+        {
+            string pattern = @"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])";
+            string replacement = "";
+            string result = Regex.Replace(text, pattern, replacement);
+            box.AppendText(result);
+        }
+
+        public const char ANSI_SGR_RESET =  (char)0;
+        public const char ANSI_SGR_BOLD =   (char)1;
+
+        public const char ANSI_FG_BLACK =   (char)30;
+        public const char ANSI_FG_RED =     (char)31;
+        public const char ANSI_FG_GREEN =   (char)32;
+        public const char ANSI_FG_YELLOW =  (char)33;
+        public const char ANSI_FG_BLUE =    (char)34;
+        public const char ANSI_FG_MAGENTA = (char)35;
+        public const char ANSI_FG_CYAN =    (char)36;
+        public const char ANSI_FG_WHITE =   (char)37;
+
+        public static void AppendANSIText(this RichTextBox box, string text)
+        {
+            int Seq = -1;
+
+            // Parse CSI (Control Sequence Introducer) beginning with ESC [
+            string[] input = text.Split(new string[] { "\u001b[" }, StringSplitOptions.RemoveEmptyEntries);
+
+            //box.AppendText("Input Count" + input.Count() + "\r\n");
+
+            if (input.Count() == 1)
+            {
+                // No escape codes found. Send straight though to text box
+                box.AppendText(text);
+            } 
+            else
+            {
+
+                foreach (string substring in input)
+                {
+                    // We should now have a string prefixed with an ANSI code (minus the '\e[' )
+                    // Parse out the ANSI Sequence Codes.
+                    char[] delimiterChars = { ';', 'm' };
+                    string[] ansi_seq = substring.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
+
+                    //box.AppendText("[ANSI SEQ Count " + ansi_seq.Count() + "]\r\n");
+
+                    foreach (string seq in ansi_seq)
+                    {
+                        // Interate through each sequence code and try to convert to Int. 
+                        Seq = -1;
+                        try
+                        {
+                            Seq = int.Parse(seq);
+
+                            //box.AppendText("Seq =" + Seq.ToString() + "\r\n");
+                            switch (Seq)
+                            {
+                                case ANSI_SGR_BOLD:
+                                    break;
+
+                                case ANSI_SGR_RESET:
+                                    box.SelectionColor = box.ForeColor;
+                                    break;
+
+                                case ANSI_FG_BLACK:
+                                    box.SelectionColor = Color.Black;
+                                    break;
+
+                                case ANSI_FG_RED:
+                                    //box.SelectionColor = Color.Red;
+                                    box.SelectionColor = Color.FromArgb(197, 15, 31);
+                                    break;
+
+                                case ANSI_FG_GREEN:
+                                    box.SelectionColor = Color.Green;
+                                    break;
+
+                                case ANSI_FG_YELLOW:
+                                    box.SelectionColor = Color.Yellow;
+                                    break;
+
+                                case ANSI_FG_BLUE:
+                                    //box.SelectionColor = Color.Blue;
+                                    box.SelectionColor = Color.FromArgb(0, 55, 218);
+                                    break;
+
+                                case ANSI_FG_MAGENTA:
+                                    box.SelectionColor = Color.Magenta;
+                                    break;
+
+                                case ANSI_FG_CYAN:
+                                    box.SelectionColor = Color.Cyan;
+                                    break;
+
+                                case ANSI_FG_WHITE:
+                                    box.SelectionColor = Color.White;
+                                    break;
+
+                                default:
+                                    box.AppendText("[Unknown Sequence Code " + Seq.ToString() + "]\r\n");
+                                    break;
+                            }
+                        }
+                        catch
+                        {
+                            // We are finished. Print string.
+                            int index = substring.IndexOf('m');
+                            if (index.Equals(-1))
+                            {
+                                box.AppendText(substring);
+                            }
+                            else
+                            {
+                                box.SuspendLayout();
+                                box.SelectionStart = box.TextLength;
+                                box.SelectionLength = seq.Length;
+                                box.AppendText(substring.Remove(0, index + 1));
+                                box.ResumeLayout();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void AppendColourText(this RichTextBox box, string text, Color color)
+        {
+            box.SuspendLayout();
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = text.Length;
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
+            box.ResumeLayout();
+        }
+
+        public static void HexDump(this RichTextBox box, string text)
+        {
+            char[] values = text.ToCharArray();
+
+            foreach (char letter in values)
+            {
+                int value = Convert.ToInt32(letter);
+                box.AppendText($"{value:X} ");
+            }
         }
     }
 }
