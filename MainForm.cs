@@ -522,8 +522,7 @@ namespace SerialTerminal
 
                                     case ANSI_FG_RED:
                                         //box.SelectionColor = Color.Red;
-                                        //box.SelectionColor = Color.FromArgb(197, 15, 31);
-                                        box.SelectionColor = Color.FromArgb(187, 0, 0);
+                                        box.SelectionColor = Color.FromArgb(255, 85, 85);
                                         break;
 
                                     case ANSI_FG_GREEN:
@@ -532,13 +531,12 @@ namespace SerialTerminal
 
                                     case ANSI_FG_YELLOW:
                                         //box.SelectionColor = Color.Yellow;
-                                        box.SelectionColor = Color.FromArgb(187, 187, 0);
+                                        box.SelectionColor = Color.FromArgb(255, 255, 85);
                                         break;
 
                                     case ANSI_FG_BLUE:
                                         //box.SelectionColor = Color.Blue;
-                                        //box.SelectionColor = Color.FromArgb(0, 55, 218);
-                                        box.SelectionColor = Color.FromArgb(0, 0, 187);
+                                        box.SelectionColor = Color.FromArgb(85, 85, 255);
                                         break;
 
                                     case ANSI_FG_MAGENTA:
