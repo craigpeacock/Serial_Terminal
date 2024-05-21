@@ -61,12 +61,37 @@ namespace SerialTerminal
                     }
                 }
             }
+            if (Convert.ToBoolean(key.GetValue("COM Reopen"))) {
+                OpenCommPort();
+            }
  
             tbLogFileName.Text = (string)key.GetValue("Log Filename");
             tbSend1.Text = (string)key.GetValue("Send Line 1");
             tbSend2.Text = (string)key.GetValue("Send Line 2");
             tbSend3.Text = (string)key.GetValue("Send Line 3");
             tbSend4.Text = (string)key.GetValue("Send Line 4");
+            if (key.GetValue("ANSI") != null) {
+                int value = (int)key.GetValue("ANSI");
+                switch (value)
+                {
+                    case 0:
+                        rbRaw.Checked = true;
+                        break;
+
+                    case 1:
+                        rbRemoveANSI.Checked = true;
+                        break;
+
+                    case 2:
+                        rbParseANSI.Checked = true;
+                        break;
+
+                    default:
+                        rbRaw.Checked = true;
+                        break;
+                }
+            }
+
             cbAutoScroll.Checked = Convert.ToBoolean(key.GetValue("AutoScroll"));
             if (key.GetValue("Left") != null)
                 this.Left = (int)key.GetValue("Left");
@@ -157,20 +182,21 @@ namespace SerialTerminal
 
         private void UpdateTerminalMethod(string data)
         {
-            this.Invoke((MethodInvoker)delegate
+            this.BeginInvoke((MethodInvoker)delegate
             {
-                if (cbANSIParse.Checked)
-                {
-                    tbOutput.AppendANSIText(data);
-                } 
-                else if (cbANSIRemove.Checked)
-                {
-                    tbOutput.RemoveANSIText(data);
-                } 
-                else
+                if (rbRaw.Checked)
                 {
                     tbOutput.AppendText(data);
-                    //tbOutput.Text += data;
+                }
+
+                if (rbParseANSI.Checked)
+                {
+                    tbOutput.AppendANSIText(data);
+                }
+
+                if (rbRemoveANSI.Checked)
+                {
+                    tbOutput.RemoveANSIText(data);
                 }
 
                 if (cbAutoScroll.Checked)
@@ -373,15 +399,11 @@ namespace SerialTerminal
         
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (CommPort.IsOpen)
-            {
-                CommPort.Close();
-            }
-
             RegistryKey key;
             key = Registry.CurrentUser.CreateSubKey("Software\\BeyondLogic\\TerminalProgram");
             string[] name = cbPortNumber.Text.Split(':');
             key.SetValue("COM Port", (string)name[0]);
+            key.SetValue("COM Reopen", (bool)CommPort.IsOpen);
             key.SetValue("Baud Rate", (string)cbBaudRate.Text);
             key.SetValue("Log Filename", (string)tbLogFileName.Text);
             key.SetValue("Send Line 1", (string)tbSend1.Text);
@@ -389,9 +411,28 @@ namespace SerialTerminal
             key.SetValue("Send Line 3", (string)tbSend3.Text);
             key.SetValue("Send Line 4", (string)tbSend4.Text);
             key.SetValue("AutoScroll", cbAutoScroll.Checked);
+
+            int value = 0;
+            if (rbRaw.Checked) value = 0;
+            else if (rbRemoveANSI.Checked) value = 1;
+            else if (rbParseANSI.Checked) value = 2;
+            key.SetValue("ANSI", value);
+
             key.SetValue("Left", this.Left);
             key.SetValue("Top", this.Top);
             key.Close();
+
+            if (CommPort.IsOpen)
+            {
+                CommPort.DiscardInBuffer();
+                CommPort.DiscardOutBuffer();
+                CommPort.Close();
+            }
+        }
+
+        private void bClearScreen_Click(object sender, EventArgs e)
+        {
+            tbOutput.Clear();
         }
     }
 

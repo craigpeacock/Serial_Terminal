@@ -51,13 +51,19 @@
             this.tbSend2 = new System.Windows.Forms.TextBox();
             this.bSend1 = new System.Windows.Forms.Button();
             this.tbSend1 = new System.Windows.Forms.TextBox();
-            this.cbANSIParse = new System.Windows.Forms.CheckBox();
-            this.cbANSIRemove = new System.Windows.Forms.CheckBox();
+            this.gbANSI = new System.Windows.Forms.GroupBox();
+            this.rbParseANSI = new System.Windows.Forms.RadioButton();
+            this.rbRemoveANSI = new System.Windows.Forms.RadioButton();
+            this.rbRaw = new System.Windows.Forms.RadioButton();
+            this.gbScreen = new System.Windows.Forms.GroupBox();
             this.cbAutoScroll = new System.Windows.Forms.CheckBox();
+            this.bClearScreen = new System.Windows.Forms.Button();
             this.gbSerialPortSettings.SuspendLayout();
             this.statusStripMain.SuspendLayout();
             this.gbLogging.SuspendLayout();
             this.gbSend.SuspendLayout();
+            this.gbANSI.SuspendLayout();
+            this.gbScreen.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbSerialPortSettings
@@ -144,7 +150,7 @@
             this.tbOutput.ForeColor = System.Drawing.Color.LightGray;
             this.tbOutput.Location = new System.Drawing.Point(18, 53);
             this.tbOutput.Name = "tbOutput";
-            this.tbOutput.Size = new System.Drawing.Size(946, 441);
+            this.tbOutput.Size = new System.Drawing.Size(946, 414);
             this.tbOutput.TabIndex = 0;
             this.tbOutput.TabStop = false;
             this.tbOutput.Text = "";
@@ -282,44 +288,89 @@
             this.tbSend1.Size = new System.Drawing.Size(355, 21);
             this.tbSend1.TabIndex = 5;
             // 
-            // cbANSIParse
+            // gbANSI
             // 
-            this.cbANSIParse.AutoSize = true;
-            this.cbANSIParse.Location = new System.Drawing.Point(838, 505);
-            this.cbANSIParse.Name = "cbANSIParse";
-            this.cbANSIParse.Size = new System.Drawing.Size(114, 17);
-            this.cbANSIParse.TabIndex = 9;
-            this.cbANSIParse.Text = "Parse ANSI Codes";
-            this.cbANSIParse.UseVisualStyleBackColor = true;
+            this.gbANSI.Controls.Add(this.rbParseANSI);
+            this.gbANSI.Controls.Add(this.rbRemoveANSI);
+            this.gbANSI.Controls.Add(this.rbRaw);
+            this.gbANSI.Location = new System.Drawing.Point(623, 477);
+            this.gbANSI.Name = "gbANSI";
+            this.gbANSI.Size = new System.Drawing.Size(335, 50);
+            this.gbANSI.TabIndex = 13;
+            this.gbANSI.TabStop = false;
+            this.gbANSI.Text = "ANSI Formatting";
             // 
-            // cbANSIRemove
+            // rbParseANSI
             // 
-            this.cbANSIRemove.AutoSize = true;
-            this.cbANSIRemove.Location = new System.Drawing.Point(703, 505);
-            this.cbANSIRemove.Name = "cbANSIRemove";
-            this.cbANSIRemove.Size = new System.Drawing.Size(127, 17);
-            this.cbANSIRemove.TabIndex = 10;
-            this.cbANSIRemove.Text = "Remove ANSI Codes";
-            this.cbANSIRemove.UseVisualStyleBackColor = true;
+            this.rbParseANSI.AutoSize = true;
+            this.rbParseANSI.Location = new System.Drawing.Point(209, 19);
+            this.rbParseANSI.Name = "rbParseANSI";
+            this.rbParseANSI.Size = new System.Drawing.Size(113, 17);
+            this.rbParseANSI.TabIndex = 2;
+            this.rbParseANSI.TabStop = true;
+            this.rbParseANSI.Text = "Parse ANSI Codes";
+            this.rbParseANSI.UseVisualStyleBackColor = true;
+            // 
+            // rbRemoveANSI
+            // 
+            this.rbRemoveANSI.AutoSize = true;
+            this.rbRemoveANSI.Location = new System.Drawing.Point(77, 19);
+            this.rbRemoveANSI.Name = "rbRemoveANSI";
+            this.rbRemoveANSI.Size = new System.Drawing.Size(126, 17);
+            this.rbRemoveANSI.TabIndex = 1;
+            this.rbRemoveANSI.TabStop = true;
+            this.rbRemoveANSI.Text = "Remove ANSI Codes";
+            this.rbRemoveANSI.UseVisualStyleBackColor = true;
+            // 
+            // rbRaw
+            // 
+            this.rbRaw.AutoSize = true;
+            this.rbRaw.Checked = true;
+            this.rbRaw.Location = new System.Drawing.Point(24, 19);
+            this.rbRaw.Name = "rbRaw";
+            this.rbRaw.Size = new System.Drawing.Size(47, 17);
+            this.rbRaw.TabIndex = 0;
+            this.rbRaw.TabStop = true;
+            this.rbRaw.Text = "Raw";
+            this.rbRaw.UseVisualStyleBackColor = true;
+            // 
+            // gbScreen
+            // 
+            this.gbScreen.Controls.Add(this.cbAutoScroll);
+            this.gbScreen.Controls.Add(this.bClearScreen);
+            this.gbScreen.Location = new System.Drawing.Point(12, 477);
+            this.gbScreen.Name = "gbScreen";
+            this.gbScreen.Size = new System.Drawing.Size(234, 50);
+            this.gbScreen.TabIndex = 14;
+            this.gbScreen.TabStop = false;
+            this.gbScreen.Text = "Screen";
             // 
             // cbAutoScroll
             // 
             this.cbAutoScroll.AutoSize = true;
-            this.cbAutoScroll.Location = new System.Drawing.Point(22, 505);
+            this.cbAutoScroll.Location = new System.Drawing.Point(140, 20);
             this.cbAutoScroll.Name = "cbAutoScroll";
             this.cbAutoScroll.Size = new System.Drawing.Size(74, 17);
-            this.cbAutoScroll.TabIndex = 11;
+            this.cbAutoScroll.TabIndex = 16;
             this.cbAutoScroll.Text = "AutoScroll";
             this.cbAutoScroll.UseVisualStyleBackColor = true;
+            // 
+            // bClearScreen
+            // 
+            this.bClearScreen.Location = new System.Drawing.Point(16, 14);
+            this.bClearScreen.Name = "bClearScreen";
+            this.bClearScreen.Size = new System.Drawing.Size(107, 26);
+            this.bClearScreen.TabIndex = 13;
+            this.bClearScreen.Text = "Clear Screen";
+            this.bClearScreen.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(970, 640);
-            this.Controls.Add(this.cbAutoScroll);
-            this.Controls.Add(this.cbANSIRemove);
-            this.Controls.Add(this.cbANSIParse);
+            this.Controls.Add(this.gbScreen);
+            this.Controls.Add(this.gbANSI);
             this.Controls.Add(this.gbSend);
             this.Controls.Add(this.gbLogging);
             this.Controls.Add(this.tbOutput);
@@ -338,6 +389,10 @@
             this.gbLogging.PerformLayout();
             this.gbSend.ResumeLayout(false);
             this.gbSend.PerformLayout();
+            this.gbANSI.ResumeLayout(false);
+            this.gbANSI.PerformLayout();
+            this.gbScreen.ResumeLayout(false);
+            this.gbScreen.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -368,9 +423,13 @@
         private System.Windows.Forms.TextBox tbSend2;
         private System.Windows.Forms.Button bSend1;
         private System.Windows.Forms.TextBox tbSend1;
-        private System.Windows.Forms.CheckBox cbANSIParse;
-        private System.Windows.Forms.CheckBox cbANSIRemove;
+        private System.Windows.Forms.GroupBox gbANSI;
+        private System.Windows.Forms.RadioButton rbParseANSI;
+        private System.Windows.Forms.RadioButton rbRemoveANSI;
+        private System.Windows.Forms.RadioButton rbRaw;
+        private System.Windows.Forms.GroupBox gbScreen;
         private System.Windows.Forms.CheckBox cbAutoScroll;
+        private System.Windows.Forms.Button bClearScreen;
     }
 }
 
