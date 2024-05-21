@@ -53,6 +53,7 @@
             this.tbSend1 = new System.Windows.Forms.TextBox();
             this.cbANSIParse = new System.Windows.Forms.CheckBox();
             this.cbANSIRemove = new System.Windows.Forms.CheckBox();
+            this.cbAutoScroll = new System.Windows.Forms.CheckBox();
             this.gbSerialPortSettings.SuspendLayout();
             this.statusStripMain.SuspendLayout();
             this.gbLogging.SuspendLayout();
@@ -112,6 +113,7 @@
             // 
             // cbPortNumber
             // 
+            this.cbPortNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbPortNumber.FormattingEnabled = true;
             this.cbPortNumber.Location = new System.Drawing.Point(39, 18);
             this.cbPortNumber.Name = "cbPortNumber";
@@ -300,11 +302,22 @@
             this.cbANSIRemove.Text = "Remove ANSI Codes";
             this.cbANSIRemove.UseVisualStyleBackColor = true;
             // 
+            // cbAutoScroll
+            // 
+            this.cbAutoScroll.AutoSize = true;
+            this.cbAutoScroll.Location = new System.Drawing.Point(22, 505);
+            this.cbAutoScroll.Name = "cbAutoScroll";
+            this.cbAutoScroll.Size = new System.Drawing.Size(74, 17);
+            this.cbAutoScroll.TabIndex = 11;
+            this.cbAutoScroll.Text = "AutoScroll";
+            this.cbAutoScroll.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(970, 640);
+            this.Controls.Add(this.cbAutoScroll);
             this.Controls.Add(this.cbANSIRemove);
             this.Controls.Add(this.cbANSIParse);
             this.Controls.Add(this.gbSend);
@@ -357,6 +370,7 @@
         private System.Windows.Forms.TextBox tbSend1;
         private System.Windows.Forms.CheckBox cbANSIParse;
         private System.Windows.Forms.CheckBox cbANSIRemove;
+        private System.Windows.Forms.CheckBox cbAutoScroll;
     }
 }
 

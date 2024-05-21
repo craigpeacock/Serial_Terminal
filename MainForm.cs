@@ -43,12 +43,33 @@ namespace SerialTerminal
             key = Registry.CurrentUser.OpenSubKey("Software\\BeyondLogic\\TerminalProgram");
 
             cbBaudRate.Text = (string)key.GetValue("Baud Rate");
-            cbPortNumber.Text = (string)key.GetValue("COM Port");
+ 
+            string PortNumber = (string)key.GetValue("COM Port");
+            if (PortNumber != null)
+            {
+                if (PortNumber.Length > 1)
+                {
+                    for (int i = 0; i < cbPortNumber.Items.Count; i++)
+                    {
+                        if (cbPortNumber.Items[i].ToString().StartsWith(PortNumber))
+                        {
+                            cbPortNumber.SelectedIndex = i;
+                            //cbPortNumber.Text = cbPortNumber.Items[i].ToString();
+                        }
+                    }
+                }
+            }
+ 
             tbLogFileName.Text = (string)key.GetValue("Log Filename");
             tbSend1.Text = (string)key.GetValue("Send Line 1");
             tbSend2.Text = (string)key.GetValue("Send Line 2");
             tbSend3.Text = (string)key.GetValue("Send Line 3");
             tbSend4.Text = (string)key.GetValue("Send Line 4");
+            cbAutoScroll.Checked = Convert.ToBoolean(key.GetValue("AutoScroll"));
+            if (key.GetValue("Left") != null)
+                this.Left = (int)key.GetValue("Left");
+            if (key.GetValue("Top") != null)
+                this.Top = (int)key.GetValue("Top");
         }
         Hashtable BuildPortNameHash(string[] oPortsToMap)
         {
@@ -149,8 +170,12 @@ namespace SerialTerminal
                     tbOutput.AppendText(data);
                     //tbOutput.Text += data;
                 }
-                tbOutput.SelectionStart = tbOutput.Text.Length;
-                tbOutput.ScrollToCaret();
+
+                if (cbAutoScroll.Checked)
+                {
+                    tbOutput.SelectionStart = tbOutput.Text.Length;
+                    tbOutput.ScrollToCaret();
+                }
             });
 
             if (logging)
@@ -163,12 +188,12 @@ namespace SerialTerminal
         {
             try
             {
-                string data = CommPort.ReadExisting();
-                //string data = CommPort.ReadLine();
-                UpdateTerm(data);
+                //string data = CommPort.ReadExisting();
+                string data = CommPort.ReadLine();
+                UpdateTerm(data + CommPort.NewLine);
             } catch (Exception ex)
             {
-                tsStatus.Text = ex.Message.ToString();
+                //tsStatus.Text = ex.Message.ToString();
             }
         }
 
@@ -346,7 +371,10 @@ namespace SerialTerminal
         
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseCommPort();
+            if (CommPort.IsOpen)
+            {
+                CommPort.Close();
+            }
 
             RegistryKey key;
             key = Registry.CurrentUser.CreateSubKey("Software\\BeyondLogic\\TerminalProgram");
@@ -358,6 +386,9 @@ namespace SerialTerminal
             key.SetValue("Send Line 2", (string)tbSend2.Text);
             key.SetValue("Send Line 3", (string)tbSend3.Text);
             key.SetValue("Send Line 4", (string)tbSend4.Text);
+            key.SetValue("AutoScroll", cbAutoScroll.Checked);
+            key.SetValue("Left", this.Left);
+            key.SetValue("Top", this.Top);
             key.Close();
         }
     }
@@ -434,7 +465,8 @@ namespace SerialTerminal
 
                                 case ANSI_FG_RED:
                                     //box.SelectionColor = Color.Red;
-                                    box.SelectionColor = Color.FromArgb(197, 15, 31);
+                                    //box.SelectionColor = Color.FromArgb(197, 15, 31);
+                                    box.SelectionColor = Color.FromArgb(187, 0, 0);
                                     break;
 
                                 case ANSI_FG_GREEN:
@@ -442,12 +474,14 @@ namespace SerialTerminal
                                     break;
 
                                 case ANSI_FG_YELLOW:
-                                    box.SelectionColor = Color.Yellow;
+                                    //box.SelectionColor = Color.Yellow;
+                                    box.SelectionColor = Color.FromArgb(187, 187, 0);
                                     break;
 
                                 case ANSI_FG_BLUE:
                                     //box.SelectionColor = Color.Blue;
-                                    box.SelectionColor = Color.FromArgb(0, 55, 218);
+                                    //box.SelectionColor = Color.FromArgb(0, 55, 218);
+                                    box.SelectionColor = Color.FromArgb(0, 0, 187);
                                     break;
 
                                 case ANSI_FG_MAGENTA:
