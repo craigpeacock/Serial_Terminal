@@ -15,6 +15,8 @@ using System.Collections;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Text.RegularExpressions;
 using System.Data.SqlTypes;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace SerialTerminal
 {
@@ -422,104 +424,110 @@ namespace SerialTerminal
             // Parse CSI (Control Sequence Introducer) beginning with ESC [
             string[] input = text.Split(new string[] { "\u001b[" }, StringSplitOptions.RemoveEmptyEntries);
 
-            //box.AppendText("Input Count" + input.Count() + "\r\n");
-
             if (input.Count() == 1)
             {
-                // No escape codes found. Send straight though to text box
+                // No escape codes found. Send straight though to text box.
                 box.AppendText(text);
             } 
             else
             {
-
                 foreach (string substring in input)
                 {
                     // We should now have a string prefixed with an ANSI code (minus the '\e[' )
                     // Parse out the ANSI Sequence Codes.
-                    char[] delimiterChars = { ';', 'm' };
-                    string[] ansi_seq = substring.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
+                    //Debug.WriteLine("Substring = [" + substring + "]");
 
-                    //box.AppendText("[ANSI SEQ Count " + ansi_seq.Count() + "]\r\n");
-
-                    foreach (string seq in ansi_seq)
+                    int index = substring.IndexOf("m");
+                    if (index != -1)
                     {
-                        // Interate through each sequence code and try to convert to Int. 
-                        Seq = -1;
-                        try
+                        string CSI = substring.Substring(0, index);
+
+                        char[] delimiterChars = { ';', 'm' };
+                        string[] ansi_seq = CSI.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
+
+                        //Debug.WriteLine("ANSI CSI = [" + CSI + "], SEQ Count " + ansi_seq.Count());
+
+                        for (int i = 0; i < (ansi_seq.Count()); i++)
                         {
-                            Seq = int.Parse(seq);
+                            string seq = ansi_seq[i];
+                            //Debug.WriteLine("Seq" + i + " = [" + seq + "]");
 
-                            //box.AppendText("Seq =" + Seq.ToString() + "\r\n");
-                            switch (Seq)
+                            Seq = -1;
+                            bool valid = int.TryParse(seq, out Seq);
+                            if (valid)
                             {
-                                case ANSI_SGR_BOLD:
-                                    break;
+                                switch (Seq)
+                                {
+                                    case ANSI_SGR_BOLD:
+                                        break;
 
-                                case ANSI_SGR_RESET:
-                                    box.SelectionColor = box.ForeColor;
-                                    break;
+                                    case ANSI_SGR_RESET:
+                                        box.SelectionColor = box.ForeColor;
+                                        break;
 
-                                case ANSI_FG_BLACK:
-                                    box.SelectionColor = Color.Black;
-                                    break;
+                                    case ANSI_FG_BLACK:
+                                        box.SelectionColor = Color.Black;
+                                        break;
 
-                                case ANSI_FG_RED:
-                                    //box.SelectionColor = Color.Red;
-                                    //box.SelectionColor = Color.FromArgb(197, 15, 31);
-                                    box.SelectionColor = Color.FromArgb(187, 0, 0);
-                                    break;
+                                    case ANSI_FG_RED:
+                                        //box.SelectionColor = Color.Red;
+                                        //box.SelectionColor = Color.FromArgb(197, 15, 31);
+                                        box.SelectionColor = Color.FromArgb(187, 0, 0);
+                                        break;
 
-                                case ANSI_FG_GREEN:
-                                    box.SelectionColor = Color.Green;
-                                    break;
+                                    case ANSI_FG_GREEN:
+                                        box.SelectionColor = Color.Green;
+                                        break;
 
-                                case ANSI_FG_YELLOW:
-                                    //box.SelectionColor = Color.Yellow;
-                                    box.SelectionColor = Color.FromArgb(187, 187, 0);
-                                    break;
+                                    case ANSI_FG_YELLOW:
+                                        //box.SelectionColor = Color.Yellow;
+                                        box.SelectionColor = Color.FromArgb(187, 187, 0);
+                                        break;
 
-                                case ANSI_FG_BLUE:
-                                    //box.SelectionColor = Color.Blue;
-                                    //box.SelectionColor = Color.FromArgb(0, 55, 218);
-                                    box.SelectionColor = Color.FromArgb(0, 0, 187);
-                                    break;
+                                    case ANSI_FG_BLUE:
+                                        //box.SelectionColor = Color.Blue;
+                                        //box.SelectionColor = Color.FromArgb(0, 55, 218);
+                                        box.SelectionColor = Color.FromArgb(0, 0, 187);
+                                        break;
 
-                                case ANSI_FG_MAGENTA:
-                                    box.SelectionColor = Color.Magenta;
-                                    break;
+                                    case ANSI_FG_MAGENTA:
+                                        box.SelectionColor = Color.Magenta;
+                                        break;
 
-                                case ANSI_FG_CYAN:
-                                    box.SelectionColor = Color.Cyan;
-                                    break;
+                                    case ANSI_FG_CYAN:
+                                        box.SelectionColor = Color.Cyan;
+                                        break;
 
-                                case ANSI_FG_WHITE:
-                                    box.SelectionColor = Color.White;
-                                    break;
+                                    case ANSI_FG_WHITE:
+                                        box.SelectionColor = Color.White;
+                                        break;
 
-                                default:
-                                    box.AppendText("[Unknown Sequence Code " + Seq.ToString() + "]\r\n");
-                                    break;
-                            }
-                        }
-                        catch
-                        {
-                            // We are finished. Print string.
-                            int index = substring.IndexOf('m');
-                            if (index.Equals(-1))
-                            {
-                                box.AppendText(substring);
+                                    default:
+                                        box.AppendText("[Unknown Sequence Code " + Seq.ToString() + "]\r\n");
+                                        break;
+                                }
                             }
                             else
                             {
-                                box.SuspendLayout();
-                                box.SelectionStart = box.TextLength;
-                                box.SelectionLength = seq.Length;
-                                box.AppendText(substring.Remove(0, index + 1));
-                                box.ResumeLayout();
+                                Debug.WriteLine("Unknown Sequence (" + seq + ")");
                             }
                         }
+                        // We are finished parsing CSI
+                        box.SuspendLayout();
+                        box.SelectionStart = box.TextLength;
+                        box.SelectionLength = substring.Length - (index + 1);
+                        box.AppendText(substring.Remove(0, index + 1));
+                        box.ResumeLayout();
                     }
+                    else
+                    {
+                        // Couldn't find a terminating 'm' in CSI; Probably not a CSI;
+                        box.AppendText(substring);
+                    }
+
                 }
+                // Finished all the substrings in the line
+                //Debug.WriteLine("Complete\r\n");
             }
         }
 
