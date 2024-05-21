@@ -363,6 +363,7 @@
             this.bClearScreen.TabIndex = 13;
             this.bClearScreen.Text = "Clear Screen";
             this.bClearScreen.UseVisualStyleBackColor = true;
+            this.bClearScreen.Click += new System.EventHandler(this.bClearScreen_Click);
             // 
             // MainForm
             // 
