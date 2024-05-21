@@ -214,11 +214,14 @@ namespace SerialTerminal
 
         private void DataReceivedEventHandler(object sender, SerialDataReceivedEventArgs e)
         {
+            string data;
             try
             {
-                //string data = CommPort.ReadExisting();
-                string data = CommPort.ReadLine();
-                UpdateTerm(data + CommPort.NewLine);
+                while (CommPort.BytesToRead != 0) 
+                {
+                    data = CommPort.ReadLine();
+                    UpdateTerm(data + CommPort.NewLine);
+                }
             } catch (Exception ex)
             {
                 //tsStatus.Text = ex.Message.ToString();
@@ -237,7 +240,14 @@ namespace SerialTerminal
             if (cbPortNumber.Text != null)
             {
                 string[] name = cbPortNumber.Text.Split(':');
-                CommPort.PortName = name[0];
+                if (name.Count() > 1)
+                {
+                    CommPort.PortName = name[0];
+                } else
+                {
+                    tsStatus.Text = "Error: Serial port name is null";
+                    return;
+                }
             } else
             {
                 tsStatus.Text = "Error: Serial port name is null";
